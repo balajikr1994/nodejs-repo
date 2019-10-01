@@ -4,12 +4,13 @@ import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
 import _ from 'lodash';
 import { resourceModel } from '../config/resource';
+const config = require('../config/environment');
 
 var validateJwt = expressJwt({
-    secret: config.secrets.accessToken
+    secret: config.secrets["accessToken"]
 });
 
-export const isAuthenticated = async () => {
+export const isAuthenticated = () => {
     return compose()
         .use((req, res, next) => {
             if (req.query && req.query.hasOwnProperty('access_token')) {

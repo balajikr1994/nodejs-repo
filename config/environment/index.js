@@ -6,7 +6,7 @@ import _ from "lodash";
 let all = {
 	ip: process.env.IP || "0.0.0.0",
 	port: process.env.PORT,
-	
+	tmp: process.env.TMP || '/tmp',
 	auth: {
 		id: 12345,
 		clientId: "5d89af010cffac590ff1ee30",

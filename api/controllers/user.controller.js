@@ -7,7 +7,7 @@
 
 "use strict";
 
-import { references } from "../../config/resource";
+import { references, resources } from "../../config/resource";
 import util from 'util';
 const sendRsp = require("../../utils/response");
 const resourceModel = require("../../config/resource").resourceModel;
@@ -24,6 +24,7 @@ export const index = async (req, res) => {
 			users: getUsers
 		});
 	} catch (error) {
+		console.log("HELLO ME")
 		log.error("error", error);
 		return sendRsp(res, 500, "Server Error", {
 			error: error
@@ -38,6 +39,7 @@ export const show = async (req, res) => {
 			users: getUser
 		});
 	} catch (error) {
+		
 		log.error("error", error);
 		return sendRsp(res, 500, "Server Error", {
 			error: error
@@ -52,13 +54,13 @@ export const create = async (req, res) => {
 			return sendRsp(res, 400, 'Missing Body Params', errors);
 		}
 		const createUser = await resourceModel["users"].create(req.body);
-		
+
 		return sendRsp(res, 201, "OK", {
 			users: createUser
 		});
 	} catch (error) {
 		log.error("error", error);
-		if(error.code === 11000) {
+		if (error.code === 11000) {
 			return sendRsp(res, 406, 'Not Acceptable');
 		}
 		return sendRsp(res, 500, "Server Error", {
@@ -66,3 +68,19 @@ export const create = async (req, res) => {
 		});
 	}
 };
+
+export const me = async (req, res) => {
+	try {
+		const user = await resourceModel["users"].findById(req.user._id, "-tokens -salt -hashed_password");
+		return sendRsp(res, 200, "OK", {
+			users: user
+		});
+		
+	} catch (error) {
+		console.log("HELLO")
+		log.error("error", error);
+		return sendRsp(res, 500, "Server Error", {
+			error: error.message
+		});
+	}
+}

@@ -20,6 +20,10 @@ const userSchema = new Schema(
 			unique: true,
 			index: true
 		},
+		email_verified: {
+			type: Boolean,
+			default: false
+		},
 		gender: Number, // 1: MALE  2: FEMALE
 		status: {
 			type: String,

@@ -17,7 +17,7 @@ passport.use(new BasicStrategy(function (clientId, clientSecret, done) {
 passport.use(new ClientPasswordStrategy(function(clientId, clientSecret, done) {	
     if (config.auth["clientId"] === clientId && config.auth["clientSecret"] === clientSecret) {
         return done(null, {
-            id: 1,
+            id: config.auth.id,
             client: clientId,
             clientSecret: clientSecret
         })
