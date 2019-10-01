@@ -1,6 +1,7 @@
 "use strict";
 
 export default function(app) {
-  app.use("/api/users", require("./api/routers/user"));
-  app.use("/api/user-roles", require("./api/routers/user-role"));
+  app.use('/v1/auth/token', require('./auth'));
+  app.use("/v1/api/users", require("./api/routers/user"));
+  app.use("/v1/api/auth", require("./api/auth"));
 }

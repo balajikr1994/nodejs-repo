@@ -2,6 +2,7 @@
 
 import express from "express";
 import bodyParser from "body-parser";
+const passport = require('passport');
 
 //Express middleware configuration
 export default function(app) {
@@ -10,8 +11,10 @@ export default function(app) {
 			extended: false
 		})
 	);
+	
 	app.use(express.json());
 	app.use(bodyParser.json());
+	
 	app.use((req, res, next) => {
 		res.setHeader("Access-Control-Allow-Origin", "*");
 		res.setHeader(

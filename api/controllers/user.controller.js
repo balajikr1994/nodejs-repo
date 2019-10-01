@@ -15,7 +15,6 @@ const log = require("../../libs/log")(module);
 const config = require("../../config/environment");
 const { validationResult } = require('express-validator');
 
-
 export const index = async (req, res) => {
 	try {
 		const getUsers = await resourceModel["users"]
@@ -53,21 +52,15 @@ export const create = async (req, res) => {
 			return sendRsp(res, 400, 'Missing Body Params', errors);
 		}
 		const createUser = await resourceModel["users"].create(req.body);
-		const count = await resourceModel["users"].estimatedDocumentCount();
-		let userRoleObj = {};
-		userRoleObj["user"] = createUser._id;
-		if (count == 1) {
-			userRoleObj["role"] = config.role[1];
-			await resourceModel["user-roles"].create(userRoleObj);
-		} else {
-			userRoleObj["role"] = config.role[2];
-			await resourceModel["user-roles"].create(userRoleObj);
-		}
+		
 		return sendRsp(res, 201, "OK", {
 			users: createUser
 		});
 	} catch (error) {
 		log.error("error", error);
+		if(error.code === 11000) {
+			return sendRsp(res, 406, 'Not Acceptable');
+		}
 		return sendRsp(res, 500, "Server Error", {
 			error: error.message
 		});
