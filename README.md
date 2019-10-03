@@ -1,4 +1,4 @@
-### SPRITLE TASK
+### TASK
 ### NODEJS => v10.16.0, MONGODB => v3.6.2, EXPRESSJS => v4.17.1
 
 ```     
