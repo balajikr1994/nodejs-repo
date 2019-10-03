@@ -19,10 +19,10 @@ const PostSchema = new Schema({
 		type: Number,
 		default: 0
 	},
-	comment_users: {
+	comment_users: [{
 		type: ObjectId,
 		ref: 'User'
-	},
+	}],
 	created_by: {
 		type: ObjectId,
 		ref: 'User'

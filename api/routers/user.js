@@ -9,7 +9,6 @@ const auth = require('../../auth/auth.service');
 router.get("/", auth.isAuthenticated(), controller.index);
 router.get("/me", auth.isAuthenticated(), controller.me);
 router.get("/:id", auth.isAuthenticated(), controller.show);
-
 router.post("/", [
     check('email').isEmail(),
     check('first_name').isLength({ min: 3 }),

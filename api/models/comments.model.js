@@ -9,7 +9,7 @@ const CommentSchema = new Schema({
         type: ObjectId,
         ref: 'Post'
     },
-    all_comments: [{
+    all_comments: {
         image: String,
         comment: String,
         sub_comments: [{
@@ -20,7 +20,7 @@ const CommentSchema = new Schema({
                 ref: 'User'
             }
         }]
-    }],
+    },
     created_by: {
         type: ObjectId,
         ref: 'User'

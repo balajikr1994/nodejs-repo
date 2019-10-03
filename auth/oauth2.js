@@ -65,7 +65,7 @@ server.exchange(oauth2orize.exchange.password(async (client, username, password,
 	};
 	
 	if (userUpdate.nModified == 0) {
-		const userUpdate = await resourceModel["users"].updateOne({
+		await resourceModel["users"].updateOne({
 			"_id": user["_id"]
 		}, {
 			"$push": {
