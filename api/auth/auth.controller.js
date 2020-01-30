@@ -2,7 +2,7 @@
 
 import config from '../../config/environment';
 import request from 'request';
-const log = require("../../libs/log")(module);
+//const log = require("../../libs/log")(module);
 const sendRsp = require("../../utils/response");
 const cryptography = require('../../auth/encrypt-decrypt');
 import { resourceModel } from '../../config/resource';
@@ -15,8 +15,8 @@ export const login = async (req, res) => {
 		params["grant_type"] = "password";
 		const clientId = config.auth["clientId"];
 		const clientSecret = config.auth["clientSecret"];
+		
 		const authCode = new Buffer.from(clientId + ":" + clientSecret).toString('base64');
-	   
 		request.post({
 			"url": config.auth["url"],
 			"form": params,
@@ -34,7 +34,7 @@ export const login = async (req, res) => {
 			const refreshToken = tokenJSON["refresh_token"];
 			rspTokens["access_token"] = tokenJSON["access_token"];
 			rspTokens["expires_in"] = tokenJSON["expires_in"];
-			rspTokens["token_type"] = tokenJSON["token_type"];
+			//rspTokens["token_type"] = tokenJSON["token_type"];
 			rspTokens["refresh_token"] = tokenJSON["refresh_token"];
 			const encryptedRefToken = cryptography.encrypt(refreshToken);
 			
@@ -43,7 +43,7 @@ export const login = async (req, res) => {
 					"email": username
 				});
 				if (user) {
-					res.cookie("spritle_refresh_token", encryptedRefToken);
+					//res.cookie("DEMO_app", encryptedRefToken);
 					return sendRsp(res, 200, "Success", rspTokens);
 				}
 			} catch (error) {
@@ -52,7 +52,7 @@ export const login = async (req, res) => {
 
 		})
 	} catch (error) {
-		log.error("error", error);
+		//log.error("error", error);
 		return sendRsp(res, 500, "Server error", {
 			"error": error.message
 		})

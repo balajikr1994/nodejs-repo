@@ -2,20 +2,19 @@
 
 import oauth2orize from 'oauth2orize';
 import passport from 'passport';
-import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import { resourceModel } from '../config/resource';
 const  config  = require('../config/environment');
 const log = require("../libs/log")(module);
-const auth = require('./auth');
+require('./auth');
 const server = oauth2orize.createServer();
 
 server.exchange(oauth2orize.exchange.password(async (client, username, password, scope, done) => {
 	const user = await resourceModel["users"].findOne({
 		"email": username
 	})
-	
+
 	if (!user.authenticate(password)) {
 		return done(null, false);
 	}
@@ -30,7 +29,7 @@ server.exchange(oauth2orize.exchange.password(async (client, username, password,
 		expiresIn: config.token["expiresInMinutes"] * 60
 	});
 
-	if (user["tokens"].length > 0) {
+	/* if (user["tokens"].length > 0) {
 		for (var i = 0; i < user.tokens.length; i++) {
 			let token = user.tokens[i];
 			if (token.clientId == client.id) {
@@ -39,7 +38,7 @@ server.exchange(oauth2orize.exchange.password(async (client, username, password,
 				});
 			}
 		}
-	}
+	} */
 
 	const refreshTokenPayload = {
 		"userId": user["_id"],
@@ -82,8 +81,8 @@ server.exchange(oauth2orize.exchange.password(async (client, username, password,
 	});
 }));
 
-exports.token = [
-	passport.authenticate(['basic', 'oauth2-client-password'], {
+export default [
+	passport.authenticate(['basic'], {
 		session: false
 	}), server.token(), server.errorHandler()
 ];

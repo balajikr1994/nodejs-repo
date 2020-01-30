@@ -20,5 +20,11 @@ export const resources = {
 
 //CONFIGURATION ALL POPULATE COLLECTIONS
 export const references = {
-	
+	posts: [
+		{ path: "created_by", select: "firstname lastname" },
+		{
+			path: "maintainedby",
+			select: "name lastname"
+		}
+	]
 };

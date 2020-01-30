@@ -4,7 +4,7 @@ import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
 import _ from 'lodash';
 import { resourceModel } from '../config/resource';
-const config = require('../config/environment');
+import config from "../config/environment";
 
 var validateJwt = expressJwt({
     secret: config.secrets["accessToken"]

@@ -2,6 +2,8 @@
 
 import express from "express";
 import bodyParser from "body-parser";
+var cookieParser = require('cookie-parser');
+
 
 //Express middleware configuration
 export default function (app) {
@@ -10,7 +12,7 @@ export default function (app) {
 			extended: false
 		})
 	);
-
+	app.use(cookieParser());
 	app.use(express.json());
 	app.use(bodyParser.json());
 

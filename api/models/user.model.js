@@ -33,17 +33,27 @@ const userSchema = new Schema(
 		country_code: {
 			type: String
 		},
-		mobile: Number,
+		mobile: {
+			type: Number,
+			validate: {
+				validator: function(v) {
+					return typeof v === "number"
+				},
+				message: '{VALUE} is not a valid 10 digit number!'
+			}
+		},
 		hashed_password: {
 			type: String
 		},
 		salt: {
 			type: String
 		},
-		tokens: [{
-			clientId: Number,
-			refreshToken: String
-		}],
+		tokens: [
+			{
+				clientId: Number,
+				refreshToken: String
+			}
+		]
 	},
 	{
 		timestamps: {
@@ -55,14 +65,14 @@ const userSchema = new Schema(
 
 userSchema
 	.virtual("password")
-	.set(function (password) {
+	.set(function(password) {
 		if (password) {
 			this._password = password;
 			this.salt = this.makeSalt();
 			this.hashed_password = this.encryptPassword(password);
 		}
 	})
-	.get(function () {
+	.get(function() {
 		console.log("this", this);
 		return this._password;
 	});
@@ -78,7 +88,7 @@ userSchema.methods = {
 	makeSalt: () => {
 		return crypto.randomBytes(16).toString("base64");
 	},
-	encryptPassword: function (password) {
+	encryptPassword: function(password) {
 		if (!password || !this.salt) return "";
 		const saltWithEmail = new Buffer.from(
 			this.salt + this.email.toString("base64"),

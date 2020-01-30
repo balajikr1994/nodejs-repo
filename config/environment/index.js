@@ -1,21 +1,23 @@
 "use strict";
 
+require('dotenv').config();
 import path from "path";
 import _ from "lodash";
 
+
 let all = {
-	ip: process.env.IP,
-	port: process.env.PORT,
-	tmp: process.env.TMP,
+	ip: process.env.IP || "0.0.0.0",
+	port: process.env.PORT ,
+	tmp: process.env.TMP || "/tmp",
 	auth: {
-		id: process.env.PROJECT_ID,
-		clientId: process.env.CLIENT_ID,
-		clientSecret: process.env.CLIENT_SECRET,
+		id: process.env.PROJECT_ID || 1,
+		clientId: process.env.CLIENT_ID || "32342342343",
+		clientSecret: process.env.CLIENT_SECRET || "sdfsdfsdfsdfsfsdfsdfsdfsfsfsfsfs",
 		url: "http://localhost:" + process.env.PORT + "/v1/auth/token",
 	},
 	secrets: {
-		accessToken: process.env.accessTokenSecret,
-		refreshToken: process.env.refreshTokenSecret
+		accessToken: process.env.accessTokenSecret || "my_access_token",
+		refreshToken: process.env.refreshTokenSecret || "my_refresh_token"
 	},
 	s3FileUpload: {
 		expiresInMinutes: 60 * 15,
@@ -30,8 +32,8 @@ let all = {
 	// MongoDB connection options
 	mongo: {
 		options: {
-			autoReconnect: true,
 			useNewUrlParser: true,
+			useUnifiedTopology: true,
 			useCreateIndex: true,
 			useUnifiedTopology: true
 		}
@@ -39,7 +41,9 @@ let all = {
 };
 
 //MERGED THE FILES EASILY TO HANDLE USING WITH CONFIG
-module.exports = _.merge(
+const mergeObj = _.merge(
 	all,
-	require("./development") || {}
+	require("./development")
 );
+
+export default mergeObj;

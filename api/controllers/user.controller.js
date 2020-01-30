@@ -8,24 +8,25 @@
 "use strict";
 
 import { references, resources } from "../../config/resource";
-import util from 'util';
+import util from "util";
+import _ from "lodash";
 const sendRsp = require("../../utils/response");
 const resourceModel = require("../../config/resource").resourceModel;
-const log = require("../../libs/log")(module);
-const config = require("../../config/environment");
-const { validationResult } = require('express-validator');
+//const log = require("../../libs/log")(module);
+//const config = require("../../config/environment");
+import config from "../../config/environment";
+
+
+const { validationResult } = require("express-validator");
 
 export const index = async (req, res) => {
 	try {
 		const getUsers = await resourceModel["users"]
-			.find()
-			.populate(references["users"]);
+			.find();
 		return sendRsp(res, 200, "OK", {
 			users: getUsers
 		});
 	} catch (error) {
-		console.log("HELLO ME")
-		log.error("error", error);
 		return sendRsp(res, 500, "Server Error", {
 			error: error
 		});
@@ -39,8 +40,7 @@ export const show = async (req, res) => {
 			users: getUser
 		});
 	} catch (error) {
-		
-		log.error("error", error);
+		//log.error("error", error);
 		return sendRsp(res, 500, "Server Error", {
 			error: error
 		});
@@ -49,19 +49,21 @@ export const show = async (req, res) => {
 
 export const create = async (req, res) => {
 	try {
+		console.log("req.body", req.body)
 		const errors = validationResult(req);
+		console.log("errors", errors);
 		if (!errors.isEmpty()) {
-			return sendRsp(res, 400, 'Missing Body Params', errors);
+			return sendRsp(res, 400, "Missing Body Params!!!", errors);
 		}
 		const createUser = await resourceModel["users"].create(req.body);
-
+		
 		return sendRsp(res, 201, "OK", {
-			users: createUser
+			email: createUser.email
 		});
 	} catch (error) {
-		log.error("error", error);
+		//log.error("error", error);
 		if (error.code === 11000) {
-			return sendRsp(res, 406, 'Not Acceptable');
+			return sendRsp(res, 406, "User Already Exists!!!");
 		}
 		return sendRsp(res, 500, "Server Error", {
 			error: error.message
@@ -71,16 +73,18 @@ export const create = async (req, res) => {
 
 export const me = async (req, res) => {
 	try {
-		const user = await resourceModel["users"].findById(req.user._id, "-tokens -salt -hashed_password");
+		const user = await resourceModel["users"].findById(
+			req.user._id,
+			"-tokens -salt -hashed_password"
+		);
+		console.log("req.cookies", req.cookies);
 		return sendRsp(res, 200, "OK", {
 			users: user
 		});
-		
 	} catch (error) {
-		console.log("HELLO")
-		log.error("error", error);
+		//log.error("error", error);
 		return sendRsp(res, 500, "Server Error", {
 			error: error.message
 		});
 	}
-}
+};

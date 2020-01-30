@@ -7,7 +7,7 @@ const getLogger = module => {
 		.split("/")
 		.slice(-2)
 		.join("/");
-
+	console.log("path", path);
 	return winston.createLogger({
 		transports: [
 			new winston.transports.Console({

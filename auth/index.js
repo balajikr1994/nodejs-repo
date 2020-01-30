@@ -2,4 +2,4 @@
 
 import oauth from './oauth2';
 
-module.exports = oauth.token;
+module.exports = oauth.default;
