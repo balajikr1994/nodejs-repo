@@ -1,8 +1,10 @@
 'use strict';
 
-import config from '../config/environment';
+//import config from '../config/environment';
+const configFIle = require("../config/environment");
 const { URL } = require('url');
 var AWS = require('aws-sdk');
+var config = configFIle.default;
 
 var s3 = new AWS.S3({
 	accessKeyId: config.s3FileUpload.keyId,

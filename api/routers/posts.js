@@ -1,6 +1,6 @@
 "use strict";
 
-import express from "express";
+const express = require("express")
 const router = express.Router();
 const controller = require("../controllers/posts.controller");
 const auth = require('../../auth/auth.service');
@@ -13,4 +13,4 @@ router.post('/:id/likes', auth.isAuthenticated(), controller.createLike);
 router.post('/:id/comments', auth.isAuthenticated(), multipartMiddleware, controller.createComments);
 router.post('/:id/:comment/sub-comments', auth.isAuthenticated(), multipartMiddleware, controller.createSubComments);
 
-module.exports = router;
+export default router;

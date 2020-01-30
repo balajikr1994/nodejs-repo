@@ -13,7 +13,7 @@ const app = express(),
 	HTML_FILE = path.join(DIST_DIR, "index.html");
 const server = http.createServer(app);
 const multipart = require("connect-multiparty");
-console.log("what doing...");
+
 app.get("/", (req, res) => {
 	res.sendFile(HTML_FILE);
 });

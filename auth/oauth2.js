@@ -1,35 +1,42 @@
-'use strict';
+"use strict";
 
-import oauth2orize from 'oauth2orize';
-import passport from 'passport';
-import jwt from 'jsonwebtoken';
-import _ from 'lodash';
-import { resourceModel } from '../config/resource';
-const  config  = require('../config/environment');
-const log = require("../libs/log")(module);
-require('./auth');
+import oauth2orize from "oauth2orize";
+import passport from "passport";
+import jwt from "jsonwebtoken";
+import _ from "lodash";
+import { resourceModel } from "../config/resource";
+const configFile = require("../config/environment");
+//const log = require("../libs/log")(module);
+require("./auth");
 const server = oauth2orize.createServer();
+var config = configFile.default;
 
-server.exchange(oauth2orize.exchange.password(async (client, username, password, scope, done) => {
-	const user = await resourceModel["users"].findOne({
-		"email": username
-	})
+server.exchange(
+	oauth2orize.exchange.password(
+		async (client, username, password, scope, done) => {
+			const user = await resourceModel["users"].findOne({
+				email: username
+			});
 
-	if (!user.authenticate(password)) {
-		return done(null, false);
-	}
+			if (!user.authenticate(password)) {
+				return done(null, false);
+			}
 
-	const tokenPayLoad = {
-		"userId": user["_id"],
-		"email": user["email"],
-		"client": client
-	}
-	
-	const accessToken = jwt.sign(tokenPayLoad, config.secrets["accessToken"], {
-		expiresIn: config.token["expiresInMinutes"] * 60
-	});
+			const tokenPayLoad = {
+				userId: user["_id"],
+				email: user["email"],
+				client: client
+			};
 
-	/* if (user["tokens"].length > 0) {
+			const accessToken = jwt.sign(
+				tokenPayLoad,
+				config.secrets["accessToken"],
+				{
+					expiresIn: config.token["expiresInMinutes"] * 60
+				}
+			);
+
+			/* if (user["tokens"].length > 0) {
 		for (var i = 0; i < user.tokens.length; i++) {
 			let token = user.tokens[i];
 			if (token.clientId == client.id) {
@@ -40,49 +47,62 @@ server.exchange(oauth2orize.exchange.password(async (client, username, password,
 		}
 	} */
 
-	const refreshTokenPayload = {
-		"userId": user["_id"],
-		"email": user["email"],
-		"client": client
-	}
-	const refreshToken = jwt.sign(refreshTokenPayload, config.secrets["refreshToken"])
+			const refreshTokenPayload = {
+				userId: user["_id"],
+				email: user["email"],
+				client: client
+			};
+			const refreshToken = jwt.sign(
+				refreshTokenPayload,
+				config.secrets["refreshToken"]
+			);
 
-	const userUpdate = await resourceModel["users"].updateOne({
-		"_id": user["_id"],
-		"tokens.clientId": client["id"]
-	}, {
-		$set: {
-			"tokens.$": {
-				"clientId": client["id"],
-				"refreshToken": refreshToken
+			const userUpdate = await resourceModel["users"].updateOne(
+				{
+					_id: user["_id"],
+					"tokens.clientId": client["id"]
+				},
+				{
+					$set: {
+						"tokens.$": {
+							clientId: client["id"],
+							refreshToken: refreshToken
+						}
+					}
+				}
+			);
+			const token = {
+				clientId: client.id,
+				refreshToken: refreshToken
+			};
+
+			if (userUpdate.nModified == 0) {
+				await resourceModel["users"].updateOne(
+					{
+						_id: user["_id"]
+					},
+					{
+						$push: {
+							tokens: token
+						}
+					}
+				);
+
+				return done(null, accessToken, refreshToken, {
+					expires_in: config.token["expiresInMinutes"] * 60
+				});
 			}
+			return done(null, accessToken, refreshToken, {
+				expires_in: config.token["expiresInMinutes"] * 60
+			});
 		}
-	});
-	const token = {
-		clientId: client.id,
-		refreshToken: refreshToken
-	};
-	
-	if (userUpdate.nModified == 0) {
-		await resourceModel["users"].updateOne({
-			"_id": user["_id"]
-		}, {
-			"$push": {
-				"tokens": token
-			}
-		});
-		
-		return done(null, accessToken, refreshToken, {
-			"expires_in": config.token["expiresInMinutes"] * 60
-		});
-	}
-	return done(null, accessToken, refreshToken, {
-		"expires_in": config.token["expiresInMinutes"] * 60
-	});
-}));
+	)
+);
 
 export default [
-	passport.authenticate(['basic'], {
+	passport.authenticate(["basic"], {
 		session: false
-	}), server.token(), server.errorHandler()
+	}),
+	server.token(),
+	server.errorHandler()
 ];
