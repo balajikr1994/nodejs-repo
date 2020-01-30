@@ -1,15 +1,7 @@
-### TASK
-### NODEJS => v10.16.0, MONGODB => v3.6.2, EXPRESSJS => v4.17.1
-
-```     
-1. `users model`
-2. `posts model`
-3. `comments model`
+```
+NodeJS with webpack config
 ```
 
-```
-    Example database images are in img folder
-```
 
 ### TECHNOLOGIES USED
 
@@ -25,6 +17,7 @@
 7. `AWS S3` for image uploads
 8. `Multipart middleware`
 9. `Winston for logger`
+10. `Webpack`
 
 ### RUN THE PROJECT
 
