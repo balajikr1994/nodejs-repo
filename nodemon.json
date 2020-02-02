@@ -5,6 +5,8 @@
         "auth/*.js",
         "libs/*.js",
         "utils/*.js",
-        "routes.js"
+        "routes.js",
+        "config/**/*.js",
+        "config/*.js"
     ]
 }

@@ -47,3 +47,4 @@ const mergeObj = _.merge(
 );
 
 export default mergeObj;
+//module.exports = mergeObj
