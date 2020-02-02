@@ -1,6 +1,7 @@
 "use strict";
 
-const express = require("express")
+//const express = require("express")
+import express from "express"
 const router = express.Router();
 const controller = require("../controllers/posts.controller");
 const auth = require('../../auth/auth.service');
