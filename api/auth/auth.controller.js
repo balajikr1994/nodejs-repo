@@ -35,15 +35,15 @@ export const login = async (req, res) => {
 			rspTokens["access_token"] = tokenJSON["access_token"];
 			rspTokens["expires_in"] = tokenJSON["expires_in"];
 			//rspTokens["token_type"] = tokenJSON["token_type"];
-			rspTokens["refresh_token"] = tokenJSON["refresh_token"];
-			const encryptedRefToken = cryptography.encrypt(refreshToken);
 			
+			const encryptedRefToken = cryptography.encrypt(refreshToken);
+			rspTokens["refresh_token"] = encryptedRefToken;
 			try {
 				const user = await resourceModel["users"].findOne({
 					"email": username
 				});
 				if (user) {
-					//res.cookie("DEMO_app", encryptedRefToken);
+					res.cookie("staffing_refresh_token", encryptedRefToken);
 					return sendRsp(res, 200, "Success", rspTokens);
 				}
 			} catch (error) {
